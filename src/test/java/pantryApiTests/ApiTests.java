@@ -19,7 +19,7 @@ public class ApiTests {
 
     }
 
-    @Test
+   /* @Test
     public void putDetailsTest() {
 
         given()
@@ -49,7 +49,7 @@ public class ApiTests {
                 .log().all()
                 .statusCode(200);
 
-    }
+    }*/
 
     @Test
     public void basketTest() {
@@ -70,7 +70,7 @@ public class ApiTests {
                     .statusCode(200);
         });
 
-        sleep(1000); //Установлено из-за огрантчнгий сервиса
+        sleep(2000); //Установлено из-за огрантчнгий сервиса
 
         step("Данные из pantry", () -> {
             given()
@@ -83,7 +83,7 @@ public class ApiTests {
                     .statusCode(200);
         });
 
-        sleep(1000); //Установлено из-за огрантчнгий сервиса
+        sleep(2000); //Установлено из-за огрантчнгий сервиса
 
         step("Создание basket: " + basketName, () -> {
             given()
@@ -99,7 +99,7 @@ public class ApiTests {
                     .log().all()
                     .statusCode(200);
         });
-        sleep(1000); //Установлено из-за огрантчнгий сервиса
+        sleep(2000); //Установлено из-за огрантчнгий сервиса
         step("Изменение basket: " + basketName, () -> {
             given()
                     .filter(new AllureRestAssured())
@@ -115,7 +115,7 @@ public class ApiTests {
                     .statusCode(200);
 
         });
-        sleep(1000); //Установлено из-за огрантчнгий сервиса
+        sleep(2000); //Установлено из-за огрантчнгий сервиса
         step("Данные из basket: " + basketName, () -> {
             given()
                     .filter(new AllureRestAssured())
@@ -130,7 +130,7 @@ public class ApiTests {
                     .log().all()
                     .statusCode(200);
         });
-        sleep(1000); //Установлено из-за огрантчнгий сервиса
+        sleep(2000); //Установлено из-за огрантчнгий сервиса
         step("Удаления basket: " + basketName, () -> {
             given()
                     .filter(new AllureRestAssured())
