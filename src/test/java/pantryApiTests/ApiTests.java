@@ -5,6 +5,8 @@ import io.restassured.RestAssured;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 
+import static com.codeborne.selenide.Selenide.sleep;
+import static io.qameta.allure.Allure.step;
 import static io.restassured.RestAssured.given;
 
 public class ApiTests {
@@ -14,7 +16,7 @@ public class ApiTests {
     @BeforeAll
     public static void setUp() {
         RestAssured.baseURI = "https://getpantry.cloud/apiv1";
-        String myId = "2f572a5a-b13f-4981-9970-93993fbb22bb";
+
     }
 
     @Test
@@ -34,6 +36,7 @@ public class ApiTests {
                 .statusCode(200);
 
     }
+
     @Test
     public void getDetailsTest() {
 
@@ -50,57 +53,94 @@ public class ApiTests {
 
     @Test
     public void basketTest() {
+        String basketName = "TestBasket";
 
-        given()
-                .filter(new AllureRestAssured())
-                .contentType("application/json")
-                .body("{\n" +
-                        "\t\"key1\": \"test11\",\n" +
-                        "\t\"key2\": \"test22\"\n" +
-                        "}")
-                .when()
-                .post("/pantry/" + myPantryId + "/basket/" + "basket123")
-                .then()
-                .log().all()
-                .statusCode(200);
+        step("Изменения в pantry", () -> {
+            given()
+                    .filter(new AllureRestAssured())
+                    .contentType("application/json")
+                    .body("{\n" +
+                            "\t\"name\": \"My account\",\n" +
+                            "\t\"description\": \"my test\"\n" +
+                            "}")
+                    .when()
+                    .put("/pantry/" + myPantryId)
+                    .then()
+                    .log().all()
+                    .statusCode(200);
+        });
 
-        given()
-                .filter(new AllureRestAssured())
-                .contentType("application/json")
-                .body("{\n" +
-                        "\t\"key1\": \"test33\",\n" +
-                        "\t\"key2\": \"test44\"\n" +
-                        "}")
-                .when()
-                .put("/pantry/" + myPantryId + "/basket/" + "basket123")
-                .then()
-                .log().all()
-                .statusCode(200);
-        given()
-                .filter(new AllureRestAssured())
-                .contentType("application/json")
-                .body("{\n" +
-                        "\t\"key1\": \"test33\",\n" +
-                        "\t\"key2\": \"test44\"\n" +
-                        "}")
-                .when()
-                .get("/pantry/" + myPantryId + "/basket/" + "basket123")
-                .then()
-                .log().all()
-                .statusCode(200);
+        sleep(1000); //Установлено из-за огрантчнгий сервиса
 
+        step("Данные из pantry", () -> {
+            given()
+                    .filter(new AllureRestAssured())
+                    .contentType("application/json")
+                    .when()
+                    .get("/pantry/" + myPantryId)
+                    .then()
+                    .log().all()
+                    .statusCode(200);
+        });
 
+        sleep(1000); //Установлено из-за огрантчнгий сервиса
 
-        given()
-                .filter(new AllureRestAssured())
-                .contentType("application/json")
-                .when()
-                .delete("/pantry/" + myPantryId + "/basket/" + "basket123")
-                .then()
-                .log().all()
-                .statusCode(200);
+        step("Создание basket: " + basketName, () -> {
+            given()
+                    .filter(new AllureRestAssured())
+                    .contentType("application/json")
+                    .body("{\n" +
+                            "\t\"key1\": \"test11\",\n" +
+                            "\t\"key2\": \"test22\"\n" +
+                            "}")
+                    .when()
+                    .post("/pantry/" + myPantryId + "/basket/" + basketName)
+                    .then()
+                    .log().all()
+                    .statusCode(200);
+        });
+        sleep(1000); //Установлено из-за огрантчнгий сервиса
+        step("Изменение basket: " + basketName, () -> {
+            given()
+                    .filter(new AllureRestAssured())
+                    .contentType("application/json")
+                    .body("{\n" +
+                            "\t\"key1\": \"test33\",\n" +
+                            "\t\"key2\": \"test44\"\n" +
+                            "}")
+                    .when()
+                    .put("/pantry/" + myPantryId + "/basket/" + basketName)
+                    .then()
+                    .log().all()
+                    .statusCode(200);
+
+        });
+        sleep(1000); //Установлено из-за огрантчнгий сервиса
+        step("Данные из basket: " + basketName, () -> {
+            given()
+                    .filter(new AllureRestAssured())
+                    .contentType("application/json")
+                    .body("{\n" +
+                            "\t\"key1\": \"test33\",\n" +
+                            "\t\"key2\": \"test44\"\n" +
+                            "}")
+                    .when()
+                    .get("/pantry/" + myPantryId + "/basket/" + basketName)
+                    .then()
+                    .log().all()
+                    .statusCode(200);
+        });
+        sleep(1000); //Установлено из-за огрантчнгий сервиса
+        step("Удаления basket: " + basketName, () -> {
+            given()
+                    .filter(new AllureRestAssured())
+                    .contentType("application/json")
+                    .when()
+                    .delete("/pantry/" + myPantryId + "/basket/" + basketName)
+                    .then()
+                    .log().all()
+                    .statusCode(200);
+        });
     }
 
 }
-
-
