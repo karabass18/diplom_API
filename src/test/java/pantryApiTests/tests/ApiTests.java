@@ -12,15 +12,14 @@ import static io.restassured.RestAssured.given;
 import static org.hamcrest.Matchers.is;
 
 public class ApiTests {
-    String myPantryId = "2f572a5a-b13f-4981-9970-93993fbb22bb";
+   // String myPantryId = "2f572a5a-b13f-4981-9970-93993fbb22bb";
 
 
     @BeforeAll
     public static void setUp() {
         RestAssured.baseURI = "https://getpantry.cloud/apiv1";
-
     }
-
+    String myPantryId = "2f572a5a-b13f-4981-9970-93993fbb22bb";
     String pantryName;
 
     @Test
@@ -49,7 +48,6 @@ public class ApiTests {
         });
         sleep(2000); //Установлено из-за огрантчнгий сервиса
 
-
         step("Получение данных о pantry", () -> {
             given()
                     .filter(new AllureRestAssured())
@@ -61,8 +59,6 @@ public class ApiTests {
                     .statusCode(200)
                     .body("name", is(pantryName));
         });
-
-
     }
 
     @Test
@@ -85,7 +81,6 @@ public class ApiTests {
                     .statusCode(200)
                     .body("html.body", is("Your Pantry was updated with basket: " +
                             basketName + "!"));
-
         });
 
         sleep(2000); //Установлено из-за огрантчнгий сервиса
@@ -101,7 +96,6 @@ public class ApiTests {
                     .statusCode(200)
                     .body("key1", is("test33"))
                     .body("key2", is("test44"));
-
         });
         sleep(2000); //Установлено из-за огрантчнгий сервиса
         step("Данные из basket: " + basketName, () -> {
@@ -112,7 +106,9 @@ public class ApiTests {
                     .get("/pantry/" + myPantryId + "/basket/" + basketName)
                     .then()
                     .log().all()
-                    .statusCode(200);
+                    .statusCode(200)
+                    .body("key1", is("test33"))
+                    .body("key2", is("test44"));
         });
         sleep(2000); //Установлено из-за огрантчнгий сервиса
         step("Удаления basket: " + basketName, () -> {
@@ -139,5 +135,4 @@ public class ApiTests {
                     .statusCode(400);
         });
     }
-
 }
