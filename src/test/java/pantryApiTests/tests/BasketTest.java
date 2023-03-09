@@ -11,8 +11,6 @@ import static org.hamcrest.Matchers.is;
 
 public class BasketTest extends TestBase{
 
-    String myPantryId = "2f572a5a-b13f-4981-9970-93993fbb22bb";
-
     @Test
     public void basketTest() {
         String basketName = RandomStringUtils.random(8, true, true);
