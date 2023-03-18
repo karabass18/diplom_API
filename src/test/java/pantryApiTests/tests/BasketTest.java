@@ -17,6 +17,7 @@ public class BasketTest extends TestBase{
         String testJson1 = "{\"key1\": \"test11\"}";
         String testJson2 = "{\"key1\": \"test33\",\n" +
                 "\"key2\": \"test44\"}";
+        myPantryId = "f";
 
         sleep(2000); //Установлено из-за огрантчнгий сервиса
         step("Создание новый basket: " + basketName, () -> {
