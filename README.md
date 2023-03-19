@@ -10,6 +10,7 @@
 - [Запуск тестов](#запуск-тестов)
 - [Запуск тестов в Jenkins](#запуск-тестов-в-jenkins)
 - [Отчет о результатах тестирования в Allure Report](#отчет-о-выполнении-тестов)
+- [Отправка отчета в telegram](#отправка-отчета-в-telegram)
 
 ## Технологии и инструменты
 
@@ -23,6 +24,7 @@
 <img src="media/logo/restassur-logo.jpg" width="50" height="50" alt="REST-Assured" title="REST-Assured"/></a>
 <a href="https://github.com/allure-framework/allure2"><img src="media/logo/Allure_Report.svg" width="50" height="50" alt="Allure" title="Allure"/></a>
 <a href="https://www.jenkins.io/"><img src="media/logo/Jenkins.svg" width="50" height="50" alt="Jenkins" title="Jenkins"/></a>
+ <a href="https://web.telegram.org/"><img src="media\logo\Telegram.svg" width="50" height="50" alt="Telegram" title="Telegram"></a>
 </p>
 
 В проекте автотесты написаны на **Java** с использованием фреймворка для тестирования API **REST-assured**. Для сборки проекта в среде **IntelliJ IDEA** используется **Gradle**.
@@ -73,3 +75,12 @@ gradle clean test
   
 
 ![Allure3](media/img/AllureAPI4.jpg)
+
+#### Отправка отчета в telegram
+
+После выполнения сборки в **Jenkins** автоматически отправляется отчет в **telegram**
+
+
+![telegram](media/img/ApiTelegram.jpg)
+
+
