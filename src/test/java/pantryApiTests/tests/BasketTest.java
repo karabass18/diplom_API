@@ -1,43 +1,79 @@
 package pantryApiTests.tests;
 
-import io.qameta.allure.restassured.AllureRestAssured;
-import org.apache.commons.lang3.RandomStringUtils;
+import helpers.NewName;
 import org.junit.jupiter.api.Test;
+import pantryApiTests.models.TestingJsonModel;
 
+import static Specs.RequestAndResponseSpec.requestSpec;
+import static Specs.RequestAndResponseSpec.responseSpec;
 import static com.codeborne.selenide.Selenide.sleep;
+import static helpers.CustomApiListener.withCustomTemplates;
 import static io.qameta.allure.Allure.step;
 import static io.restassured.RestAssured.given;
+import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
 import static org.hamcrest.Matchers.is;
 
-public class BasketTest extends TestBase{
+public class BasketTest extends TestBase {
 
     @Test
-    public void basketTest() {
-        String basketName = RandomStringUtils.random(8, true, true);
-        String testJson1 = "{\"key1\": \"test11\"}";
-        String testJson2 = "{\"key1\": \"test33\",\n" +
-                "\"key2\": \"test44\"}";
-        myPantryId = "f";
+    public void addNewBasket() {
+
 
         sleep(2000); //Установлено из-за огрантчнгий сервиса
+        //  String basketName = RandomStringUtils.random(8, true, true);
+        String basketName = NewName.newName();
+        TestingJsonModel testJson = new TestingJsonModel();
+        testJson.setKey1("test11");
+
         step("Создание новый basket: " + basketName, () -> {
-            given()
-                    .filter(new AllureRestAssured())
-                    .contentType("application/json; charset=UTF-8")
-                    .body(testJson1)
+            given(requestSpec)
+                    .body(testJson)
                     .when()
                     .post("/pantry/" + myPantryId + "/basket/" + basketName)
                     .then()
-                    .log().all()
+                    .spec(responseSpec)
                     .statusCode(200)
                     .body("html.body", is("Your Pantry was updated with basket: " +
                             basketName + "!"));
         });
-
         sleep(2000); //Установлено из-за огрантчнгий сервиса
-        step("Изменение basket: " + basketName, () -> {
+
+        step("Удаление созданой на прошлом шаге basket: " + basketName, () -> {
+            given(requestSpec)
+                    .when()
+                    .delete("/pantry/" + myPantryId + "/basket/" + basketName)
+                    .then()
+                    .spec(responseSpec)
+                    .statusCode(200);
+        });
+    }
+
+    @Test
+    public void changeDataInTheBasket() {
+        sleep(2000); //Установлено из-за огрантчнгий сервиса
+
+        String basketName = NewName.newName();
+        TestingJsonModel testJson1 = new TestingJsonModel();
+        testJson1.setKey1("test11");
+
+        TestingJsonModel testJson2 = new TestingJsonModel();
+        testJson2.setKey1("test33");
+        testJson2.setKey2("test44");
+
+        step("Создание новый basket: " + basketName, () -> {
+            given(requestSpec)
+                    .body(testJson1)
+                    .when()
+                    .post("/pantry/" + myPantryId + "/basket/" + basketName)
+                    .then()
+                    .spec(responseSpec)
+                    .statusCode(200);
+        });
+        sleep(2000); //Установлено из-за огрантчнгий сервиса
+
+        step("Изменение basket их проверка: " + basketName, () -> {
             given()
-                    .filter(new AllureRestAssured())
+                    .filter(withCustomTemplates())
                     .contentType("application/json; charset=UTF-8")
                     .body(testJson2)
                     .when()
@@ -49,40 +85,94 @@ public class BasketTest extends TestBase{
                     .body("key2", is("test44"));
         });
         sleep(2000); //Установлено из-за огрантчнгий сервиса
-        step("Данные из basket: " + basketName, () -> {
-            given()
-                    .filter(new AllureRestAssured())
-                    .contentType("application/json; charset=UTF-8")
-                    .when()
-                    .get("/pantry/" + myPantryId + "/basket/" + basketName)
-                    .then()
-                    .log().all()
-                    .statusCode(200)
-                    .body("key1", is("test33"))
-                    .body("key2", is("test44"));
-        });
-        sleep(2000); //Установлено из-за огрантчнгий сервиса
-        step("Удаления basket: " + basketName, () -> {
-            given()
-                    .filter(new AllureRestAssured())
-                    .contentType("application/json; charset=UTF-8")
+
+        step("Удаление ранее созданой basket: " + basketName, () -> {
+            given(requestSpec)
                     .when()
                     .delete("/pantry/" + myPantryId + "/basket/" + basketName)
                     .then()
-                    .log().all()
+                    .spec(responseSpec)
+                    .statusCode(200);
+        });
+    }
+
+    @Test
+    public void getBasketInfo() {
+        sleep(2000); //Установлено из-за огрантчнгий сервиса
+
+        String basketName = NewName.newName();
+
+        TestingJsonModel testJson = new TestingJsonModel();
+        testJson.setKey1("test55");
+        testJson.setKey2("test66");
+        testJson.setKey3("test77");
+
+        step("Создание новый basket: " + basketName, () -> {
+            given(requestSpec)
+                    .body(testJson)
+                    .when()
+                    .post("/pantry/" + myPantryId + "/basket/" + basketName)
+                    .then()
+                    .spec(responseSpec)
+                    .statusCode(200);
+        });
+        sleep(2000); //Установлено из-за огрантчнгий сервиса
+
+        step("Получаем и проверяем Json из basket: " + basketName, () -> {
+            TestingJsonModel response =
+                    given(requestSpec)
+                            .when()
+                            .get("/pantry/" + myPantryId + "/basket/" + basketName)
+                            .then()
+                            .spec(responseSpec)
+                            .statusCode(200)
+                            .extract().as(TestingJsonModel.class);
+            assertThat(response).isEqualTo(testJson);
+        });
+        sleep(2000); //Установлено из-за огрантчнгий сервиса
+        step("Удаление ранее созданой basket: " + basketName, () -> {
+            given(requestSpec)
+                    .when()
+                    .delete("/pantry/" + myPantryId + "/basket/" + basketName)
+                    .then()
+                    .spec(responseSpec)
+                    .statusCode(200);
+        });
+    }
+
+    @Test
+    public void deleteBasket() {
+        sleep(2000); //Установлено из-за огрантчнгий сервиса
+        String basketName = NewName.newName();
+        TestingJsonModel testJson = new TestingJsonModel();
+        testJson.setKey1("test11");
+
+        step("Создание новой basket: " + basketName, () -> {
+            given(requestSpec)
+                    .body(testJson)
+                    .when()
+                    .post("/pantry/" + myPantryId + "/basket/" + basketName)
+                    .then()
+                    .spec(responseSpec)
+                    .statusCode(200);
+        });
+        sleep(2000); //Установлено из-за огрантчнгий сервиса
+        step("Удаление basket: " + basketName, () -> {
+            given(requestSpec)
+                    .when()
+                    .delete("/pantry/" + myPantryId + "/basket/" + basketName)
+                    .then()
+                    .spec(responseSpec)
                     .statusCode(200)
                     .body("html.body", is(basketName + " was removed from your Pantry!"));
         });
-
         sleep(2000); //Установлено из-за огрантчнгий сервиса
-        step(" не существует basket  : " + basketName, () -> {
-            given()
-                    .filter(new AllureRestAssured())
-                    .contentType("application/json; charset=UTF-8")
+        step(" Проверяем, что не существует basket  : " + basketName, () -> {
+            given(requestSpec)
                     .when()
                     .get("/pantry/" + myPantryId + "/basket/" + basketName)
                     .then()
-                    .log().all()
+                    .spec(responseSpec)
                     .statusCode(400);
         });
     }
