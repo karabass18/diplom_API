@@ -8,9 +8,7 @@ import org.junit.jupiter.api.BeforeAll;
 public class TestBase {
 
     PantryConfig pantryConfig = ConfigFactory.create(PantryConfig.class, System.getProperties());
-    //static
     String myPantryId = pantryConfig.getPantryId() ;
-
 
     @BeforeAll
     static void setUp() {
