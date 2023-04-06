@@ -12,11 +12,12 @@ import static io.qameta.allure.Allure.step;
 import static io.restassured.RestAssured.given;
 import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
 import static org.hamcrest.Matchers.is;
+import static pantryApiTests.components.HelpersForBasketsTests.deleteBasket;
 
 public class BasketTest extends TestBase {
 
     @Test
-    public void addNewBasket() {
+    public void addNewBasketTest() {
 
 
         sleep(2000); //Установлено из-за огрантчнгий сервиса
@@ -39,6 +40,7 @@ public class BasketTest extends TestBase {
         sleep(2000); //Установлено из-за огрантчнгий сервиса
 
         step("Удаление созданой на прошлом шаге basket: " + basketName, () -> {
+           // deleteBasket(myPantryId,basketName);
             given(requestSpec)
                     .when()
                     .delete("/pantry/" + myPantryId + "/basket/" + basketName)
@@ -49,7 +51,7 @@ public class BasketTest extends TestBase {
     }
 
     @Test
-    public void changeDataInTheBasket() {
+    public void changeDataInTheBasketTest() {
         sleep(2000); //Установлено из-за огрантчнгий сервиса
 
         String basketName = NewName.newName();
@@ -97,7 +99,7 @@ public class BasketTest extends TestBase {
     }
 
     @Test
-    public void getBasketInfo() {
+    public void getBasketInfoTest() {
         sleep(2000); //Установлено из-за огрантчнгий сервиса
 
         String basketName = NewName.newName();
@@ -141,7 +143,7 @@ public class BasketTest extends TestBase {
     }
 
     @Test
-    public void deleteBasket() {
+    public void deleteBasketTest() {
         sleep(2000); //Установлено из-за огрантчнгий сервиса
         String basketName = NewName.newName();
         TestingJsonModel testJson = new TestingJsonModel();
