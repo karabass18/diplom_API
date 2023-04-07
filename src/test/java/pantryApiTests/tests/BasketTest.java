@@ -1,6 +1,7 @@
 package pantryApiTests.tests;
 
 import helpers.NewName;
+import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import pantryApiTests.Pages.BasketsTestsPage;
 import pantryApiTests.models.TestingJsonModel;
@@ -16,11 +17,12 @@ import static org.hamcrest.Matchers.is;
 
 public class BasketTest extends TestBase {
 
+    @DisplayName("Добавление новой Basket в Pantry")
     @Test
     public void addNewBasketTest() {
 
         BasketsTestsPage basketsTestsPage = new BasketsTestsPage();
-        sleep(2000); //Установлено из-за огрантчнгий сервиса
+        sleep(SERVICE_DELAY); //Установлено из-за огрантчнгий сервиса
         String basketName = NewName.newName();
         TestingJsonModel testJson = new TestingJsonModel();
         testJson.setKey1("test11");
@@ -42,6 +44,7 @@ public class BasketTest extends TestBase {
         });
     }
 
+    @DisplayName("Изменение данных Basket")
     @Test
     public void changeDataInTheBasketTest() {
         BasketsTestsPage basketsTestsPage = new BasketsTestsPage();
@@ -56,7 +59,7 @@ public class BasketTest extends TestBase {
         step("Создание новый basket: " + basketName, () -> {
             basketsTestsPage.newBasket(myPantryId, basketName, testJson1);
         });
-        sleep(2000); //Установлено из-за огрантчнгий сервиса
+        sleep(SERVICE_DELAY); //Установлено из-за огрантчнгий сервиса
 
         step("Изменение basket их проверка: " + basketName, () -> {
             given()
@@ -77,6 +80,7 @@ public class BasketTest extends TestBase {
         });
     }
 
+    @DisplayName("Получение данных о Basket")
     @Test
     public void getBasketInfoTest() {
         BasketsTestsPage basketsTestsPage = new BasketsTestsPage();
@@ -90,7 +94,7 @@ public class BasketTest extends TestBase {
         step("Создание новый basket: " + basketName, () -> {
             basketsTestsPage.newBasket(myPantryId, basketName, testJson);
         });
-        sleep(2000); //Установлено из-за огрантчнгий сервиса
+        sleep(SERVICE_DELAY); //Установлено из-за огрантчнгий сервиса
 
         step("Получаем и проверяем Json из basket: " + basketName, () -> {
             TestingJsonModel response =
@@ -108,6 +112,7 @@ public class BasketTest extends TestBase {
         });
     }
 
+    @DisplayName("Удаление Basket")
     @Test
     public void deleteBasketTest() {
         BasketsTestsPage basketsTestsPage = new BasketsTestsPage();
@@ -119,7 +124,7 @@ public class BasketTest extends TestBase {
             basketsTestsPage.newBasket(myPantryId, basketName, testJson);
 
         });
-        sleep(2000); //Установлено из-за огрантчнгий сервиса
+        sleep(SERVICE_DELAY); //Установлено из-за огрантчнгий сервиса
         step("Удаление basket: " + basketName, () -> {
             given(requestSpec)
                     .when()
@@ -129,7 +134,7 @@ public class BasketTest extends TestBase {
                     .statusCode(200)
                     .body("html.body", is(basketName + " was removed from your Pantry!"));
         });
-        sleep(2000); //Установлено из-за огрантчнгий сервиса
+        sleep(SERVICE_DELAY); //Установлено из-за огрантчнгий сервиса
         step(" Проверяем, что не существует basket  : " + basketName, () -> {
             given(requestSpec)
                     .when()
