@@ -9,7 +9,7 @@ public class TestBase {
 
     PantryConfig pantryConfig = ConfigFactory.create(PantryConfig.class, System.getProperties());
     String myPantryId = pantryConfig.getPantryId() ;
-    public static final int SERVICE_DELAY = 2000;
+    public static final int SERVICE_DELAY = 4000;
 
     @BeforeAll
     static void setUp() {
